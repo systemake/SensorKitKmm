@@ -24,7 +24,8 @@ class SensorRepositoryImpl(
                     SensorEvent(
                         x = event.values[0],
                         y = event.values[1],
-                        z = event.values[2]
+                        z = event.values[2],
+                        timestamp = System.currentTimeMillis()
                     )
                 )
             }

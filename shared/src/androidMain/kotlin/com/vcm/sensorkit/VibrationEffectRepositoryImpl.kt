@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.os.VibrationEffect
 import android.os.Vibrator
+import android.widget.Toast
+import com.vcm.sensorkit.models.HapticCommand
 import com.vcm.sensorkit.repository.VibrationEffectRepository
 
 class VibrationEffectRepositoryImpl(
@@ -11,17 +13,40 @@ class VibrationEffectRepositoryImpl(
 ) : VibrationEffectRepository {
 
     @SuppressLint("MissingPermission")
-    override fun vibrate(){
+    override fun vibrate(command: HapticCommand) {
 
         val vibrator =
             context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
 
-        vibrator.vibrate(
-            VibrationEffect.createOneShot(
-                200,
-                VibrationEffect.DEFAULT_AMPLITUDE
-            )
-        )
+        when (command) {
 
+            is HapticCommand.Cardinal -> {
+
+                Toast.makeText(
+                    context,
+                    "Vibration!!",
+                    Toast.LENGTH_SHORT
+                ).show()
+
+                vibrator.vibrate(
+                    VibrationEffect.createOneShot(
+                        200,
+                        VibrationEffect.DEFAULT_AMPLITUDE
+                    )
+                )
+            }
+
+            is HapticCommand.Cadence -> {
+
+                val amplitude = (command.intensity * 255).toInt()
+
+                vibrator.vibrate(
+                    VibrationEffect.createOneShot(
+                        command.duration,
+                        amplitude
+                    )
+                )
+            }
+        }
     }
 }

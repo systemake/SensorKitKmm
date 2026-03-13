@@ -1,15 +1,45 @@
 package com.vcm.sensorkit
 
+import com.vcm.sensorkit.models.HapticCommand
 import com.vcm.sensorkit.repository.VibrationEffectRepository
 import platform.UIKit.UIImpactFeedbackGenerator
 import platform.UIKit.UIImpactFeedbackStyle
+import platform.UIKit.UINotificationFeedbackGenerator
+import platform.UIKit.UINotificationFeedbackType
 
 class VibrationEffectRepositoryImpl : VibrationEffectRepository {
 
-    override fun vibrate() {
-        val generator =
-            UIImpactFeedbackGenerator(UIImpactFeedbackStyle.UIImpactFeedbackStyleMedium)
-        generator.impactOccurred()
-    }
+    override fun vibrate(command: HapticCommand) {
 
+        when (command) {
+
+            is HapticCommand.Cardinal -> {
+
+                val generator =
+                    UIImpactFeedbackGenerator(UIImpactFeedbackStyle.UIImpactFeedbackStyleHeavy)
+
+                generator.prepare()
+                generator.impactOccurred()
+            }
+
+            is HapticCommand.Cadence -> {
+
+                val generator =
+                    UIImpactFeedbackGenerator(UIImpactFeedbackStyle.UIImpactFeedbackStyleMedium)
+
+                generator.prepare()
+                generator.impactOccurred()
+            }
+
+            is HapticCommand.Stop -> {
+
+                val generator = UINotificationFeedbackGenerator()
+
+                generator.prepare()
+                generator.notificationOccurred(
+                    UINotificationFeedbackType.UINotificationFeedbackTypeWarning
+                )
+            }
+        }
+    }
 }

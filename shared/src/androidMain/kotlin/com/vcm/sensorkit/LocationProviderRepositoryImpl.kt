@@ -6,19 +6,19 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
-import com.vcm.sensorkit.models.Coordinate
-import com.vcm.sensorkit.repository.LocationRepository
+import com.vcm.sensorkit.models.LocationEvent
+import com.vcm.sensorkit.repository.LocationProviderRepository
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 
 
-class LocationRepositoryImpl(
+class LocationProviderRepositoryImpl(
     private val fusedClient: FusedLocationProviderClient
-) : LocationRepository {
+) : LocationProviderRepository {
 
     @SuppressLint("MissingPermission")
-    override fun locationUpdates(): Flow<Coordinate> = callbackFlow {
+    override fun locationUpdates(): Flow<LocationEvent> = callbackFlow {
 
         val callback = object : LocationCallback() {
 
@@ -27,7 +27,7 @@ class LocationRepositoryImpl(
                 val location = result.lastLocation ?: return
 
                 trySend(
-                    Coordinate(
+                    LocationEvent(
                         latitude = location.latitude,
                         longitude = location.longitude
                     )

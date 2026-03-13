@@ -7,4 +7,6 @@ sealed class HapticCommand {
         val intensity: Float,
         val duration: Long
     ) : HapticCommand()
+
+    object Stop : HapticCommand()
 }

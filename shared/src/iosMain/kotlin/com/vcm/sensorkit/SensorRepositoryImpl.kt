@@ -1,40 +1,81 @@
 package com.vcm.sensorkit
 
 import com.vcm.sensorkit.models.SensorEvent
+import com.vcm.sensorkit.models.SensorTypes
 import com.vcm.sensorkit.repository.SensorRepository
 import kotlinx.cinterop.ExperimentalForeignApi
-import kotlinx.cinterop.useContents
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import platform.CoreMotion.CMMotionManager
+import platform.CoreMotion.CMPedometer
 import platform.Foundation.NSOperationQueue
+import kotlin.time.Clock
 
-class SensorRepositoryImpl : SensorRepository {
+class SensorRepositoryImpl(
+    private val sensorType: Int
+) : SensorRepository {
 
     private val motionManager = CMMotionManager()
+    private val pedometer = CMPedometer()
 
     @OptIn(ExperimentalForeignApi::class)
     override fun sensorEvents(): Flow<SensorEvent> = callbackFlow {
 
-        motionManager.startAccelerometerUpdatesToQueue(
-            NSOperationQueue.mainQueue()
-        ) { data, error ->
-            val acceleration = data?.acceleration
+        when (sensorType) {
 
-            acceleration?.useContents {
+            SensorTypes.TYPE_ROTATION_VECTOR -> {
 
-                val event = SensorEvent(
-                    x = x.toFloat(),
-                    y = y.toFloat(),
-                    z = z.toFloat()
-                )
+                motionManager.deviceMotionUpdateInterval = 0.1
 
-                trySend(event)
+                motionManager.startDeviceMotionUpdatesToQueue(
+                    NSOperationQueue.mainQueue()
+                ) { motion, error ->
 
+                    motion?.attitude?.let {
+
+                        val event = SensorEvent(
+                            x = it.roll.toFloat(),
+                            y = it.pitch.toFloat(),
+                            z = it.yaw.toFloat(),
+                            timestamp = Clock.System.now().toEpochMilliseconds()
+                        )
+
+                        trySend(event)
+                    }
+
+                    error?.let {
+                        println("Motion error: $it")
+                    }
+                }
             }
 
-           print("error  $error")
+            SensorTypes.TYPE_STEP_DETECTOR -> {
+
+                if (CMPedometer.isStepCountingAvailable()) {
+
+                    pedometer.startPedometerUpdatesFromDate(
+                        platform.Foundation.NSDate()
+                    ) { data, error ->
+
+                        data?.let {
+
+                            val event = SensorEvent(
+                                x = it.numberOfSteps.floatValue,
+                                y = 0f,
+                                z = 0f,
+                                timestamp = Clock.System.now().toEpochMilliseconds()
+                            )
+
+                            trySend(event)
+                        }
+
+                        error?.let {
+                            println("Pedometer error: $it")
+                        }
+                    }
+                }
+            }
         }
 
         awaitClose {

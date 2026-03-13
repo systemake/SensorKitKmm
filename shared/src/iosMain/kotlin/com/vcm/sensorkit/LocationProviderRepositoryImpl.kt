@@ -1,7 +1,7 @@
 package com.vcm.sensorkit
 
-import com.vcm.sensorkit.models.Coordinate
-import com.vcm.sensorkit.repository.LocationRepository
+import com.vcm.sensorkit.models.LocationEvent
+import com.vcm.sensorkit.repository.LocationProviderRepository
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.useContents
 import kotlinx.coroutines.channels.awaitClose
@@ -12,10 +12,10 @@ import platform.CoreLocation.CLLocationManager
 import platform.CoreLocation.CLLocationManagerDelegateProtocol
 import platform.darwin.NSObject
 
-class LocationRepositoryImpl : LocationRepository {
+class LocationProviderRepositoryImpl : LocationProviderRepository {
 
     @OptIn(ExperimentalForeignApi::class)
-    override fun locationUpdates(): Flow<Coordinate> = callbackFlow {
+    override fun locationUpdates(): Flow<LocationEvent> = callbackFlow {
 
         val manager = CLLocationManager()
 
@@ -30,7 +30,7 @@ class LocationRepositoryImpl : LocationRepository {
 
                 trySend(
                     location.coordinate.useContents {
-                        Coordinate(
+                        LocationEvent(
                             latitude = latitude,
                             longitude = longitude
                         )

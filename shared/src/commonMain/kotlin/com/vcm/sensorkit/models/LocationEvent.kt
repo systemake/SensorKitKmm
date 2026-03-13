@@ -1,6 +1,6 @@
 package com.vcm.sensorkit.models
 
-data class Coordinate(
+data class LocationEvent(
     val latitude: Double,
     val longitude: Double
 )

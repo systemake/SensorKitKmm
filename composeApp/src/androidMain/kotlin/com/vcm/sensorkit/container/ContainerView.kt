@@ -1,5 +1,7 @@
 package com.vcm.sensorkit.container
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChatBubbleOutline
@@ -22,12 +24,12 @@ import com.vcm.sensorkit.tabs.HapticTrail
 import com.vcm.sensorkit.tabs.MotionCompass
 
 sealed class BottomTab(val route: String, val title: String, val icon: ImageVector) {
-    object First : BottomTab("first", "First", Icons.Default.Home)
-    object Second : BottomTab("second", "Second", Icons.Default.ChatBubbleOutline)
-    object Third : BottomTab("third", "Third", Icons.Default.Person)
+    object First : BottomTab("first", "MotionCompass", Icons.Default.Home)
+    object Second : BottomTab("second", "HapicTrail", Icons.Default.ChatBubbleOutline)
+    object Third : BottomTab("third", "HapicStudio", Icons.Default.Person)
 }
 
-
+@RequiresApi(Build.VERSION_CODES.Q)
 @Composable
 fun ContainerView() {
     val bottomNavController = rememberNavController()

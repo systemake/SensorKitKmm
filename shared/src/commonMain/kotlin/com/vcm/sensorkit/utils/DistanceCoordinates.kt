@@ -1,6 +1,6 @@
 package com.vcm.sensorkit.utils
 
-import com.vcm.sensorkit.models.Coordinate
+import com.vcm.sensorkit.models.LocationEvent
 import kotlin.math.PI
 import kotlin.math.atan2
 import kotlin.math.cos
@@ -10,7 +10,7 @@ import kotlin.math.sqrt
 
 object DistanceCoordinates {
 
-    fun distance(a: Coordinate, b: Coordinate): Double {
+    fun distance(a: LocationEvent, b: LocationEvent): Double {
 
         val earthRadius = 6371000.0
 

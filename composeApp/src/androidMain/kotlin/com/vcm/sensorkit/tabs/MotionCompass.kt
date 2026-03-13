@@ -1,6 +1,7 @@
 package com.vcm.sensorkit.tabs
 
 import android.content.Context
+import android.hardware.Sensor
 import android.hardware.SensorManager
 import android.widget.Toast
 import androidx.compose.foundation.background
@@ -35,7 +36,7 @@ fun MotionCompass() {
     val context = LocalContext.current
     val sensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
 
-    val sensorRepository = remember { SensorRepositoryImpl(sensorManager) }
+    val sensorRepository = remember { SensorRepositoryImpl(sensorManager, Sensor.TYPE_ROTATION_VECTOR) }
 
     val vibrationRepository = remember { VibrationEffectRepositoryImpl(context) }
 

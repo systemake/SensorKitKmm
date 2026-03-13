@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.os.VibrationEffect
 import android.os.Vibrator
-import android.widget.Toast
 import com.vcm.sensorkit.models.HapticCommand
 import com.vcm.sensorkit.repository.VibrationEffectRepository
 
@@ -22,12 +21,6 @@ class VibrationEffectRepositoryImpl(
 
             is HapticCommand.Cardinal -> {
 
-                Toast.makeText(
-                    context,
-                    "Vibration!!",
-                    Toast.LENGTH_SHORT
-                ).show()
-
                 vibrator.vibrate(
                     VibrationEffect.createOneShot(
                         200,
@@ -37,7 +30,6 @@ class VibrationEffectRepositoryImpl(
             }
 
             is HapticCommand.Cadence -> {
-
                 val amplitude = (command.intensity * 255).toInt()
 
                 vibrator.vibrate(
@@ -46,6 +38,10 @@ class VibrationEffectRepositoryImpl(
                         amplitude
                     )
                 )
+            }
+
+            is HapticCommand.Stop -> {
+                println("Stopped")
             }
         }
     }

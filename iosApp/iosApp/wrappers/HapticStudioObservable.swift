@@ -16,7 +16,7 @@ class HapticStudioObservable: ObservableObject {
 
     init() {
 
-        let hapticPlayer = HapticPlayerRepositoryImpl()
+        let hapticPlayer = IOSHapticPlayerRepositoryImpl()
         let storage = IosPatternStorage()
         viewModel = HapticStudioViewModel(hapticPlayer: hapticPlayer, storage: storage)
 

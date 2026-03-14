@@ -7,7 +7,7 @@ import android.os.Vibrator
 import com.vcm.sensorkit.domain.models.HapticPattern
 import com.vcm.sensorkit.domain.repository.HapticPlayerRepository
 
-class HapticPlayerRepositoryImpl(private val context: Context) : HapticPlayerRepository {
+class AndroidHapticPlayerRepositoryImpl(private val context: Context) : HapticPlayerRepository {
     private val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
 
     @SuppressLint("MissingPermission")

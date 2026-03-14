@@ -9,7 +9,7 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 
-class SensorRepositoryImpl(
+class AndroidSensorRepositoryImpl(
     private val sensorManager: SensorManager,
     private val sensorType: Int
 ) : SensorRepository {

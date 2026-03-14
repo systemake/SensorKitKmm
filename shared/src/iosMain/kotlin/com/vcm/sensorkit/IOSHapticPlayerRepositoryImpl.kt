@@ -21,7 +21,7 @@ import platform.CoreHaptics.CHHapticPattern
 import platform.Foundation.NSError
 
 @OptIn(ExperimentalForeignApi::class)
-class HapticPlayerRepositoryImpl : HapticPlayerRepository {
+class IOSHapticPlayerRepositoryImpl : HapticPlayerRepository {
 
     private var engine: CHHapticEngine? = null
 

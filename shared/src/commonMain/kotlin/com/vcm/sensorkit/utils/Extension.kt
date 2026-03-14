@@ -31,3 +31,20 @@ fun HapticPattern.validate(): Boolean {
 }
 
 val HapticType.Companion.TRANSIENT_TYPE: HapticType get() = HapticType.TRANSIENT
+
+fun Float.toHapticIntensity(): Float {
+    return when {
+        this < 1f -> 0.2f
+        this < 2f -> 0.5f
+        this < 3f -> 0.8f
+        else -> 1f
+    }
+}
+
+fun Long.calculateCadence(currentTimestamp: Long): Float {
+    if (this == 0L) return 0f
+
+    val deltaSeconds = (currentTimestamp - this) / 1_000_000_000f
+
+    return if (deltaSeconds > 0) 1f / deltaSeconds else 0f
+}

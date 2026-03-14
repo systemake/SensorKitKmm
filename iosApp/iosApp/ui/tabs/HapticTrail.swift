@@ -134,8 +134,6 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate, Na
         let event = LocationEvent(latitude: last.coordinate.latitude, longitude: last.coordinate.longitude)
         onLocationUpdate?(event)
         location = locations.last
-
-        print("Location last view ", location?.coordinate.latitude)
     }
 
     private func updatePermission(status: CLAuthorizationStatus) {

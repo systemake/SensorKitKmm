@@ -12,7 +12,7 @@ import platform.CoreMotion.CMPedometer
 import platform.Foundation.NSOperationQueue
 import kotlin.time.Clock
 
-class SensorRepositoryImpl(
+class IOSSensorRepositoryImpl(
     private val sensorType: Int
 ) : SensorRepository {
 

@@ -1,4 +1,4 @@
-package com.vcm.sensorkit.tabs
+package com.vcm.sensorkit.ui.tabs
 
 import android.content.Context
 import android.hardware.Sensor
@@ -24,8 +24,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.vcm.sensorkit.SensorRepositoryImpl
-import com.vcm.sensorkit.VibrationEffectRepositoryImpl
+import com.vcm.sensorkit.AndroidSensorRepositoryImpl
+import com.vcm.sensorkit.AndroidVibrationEffectRepositoryImpl
 import com.vcm.sensorkit.ui.viewmodels.CompassViewModel
 
 @Composable
@@ -34,9 +34,9 @@ fun MotionCompass() {
     val context = LocalContext.current
     val sensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
 
-    val sensorRepository = remember { SensorRepositoryImpl(sensorManager, Sensor.TYPE_ROTATION_VECTOR) }
+    val sensorRepository = remember { AndroidSensorRepositoryImpl(sensorManager, Sensor.TYPE_ROTATION_VECTOR) }
 
-    val vibrationRepository = remember { VibrationEffectRepositoryImpl(context) }
+    val vibrationRepository = remember { AndroidVibrationEffectRepositoryImpl(context) }
 
     val viewModel = remember { CompassViewModel(sensorRepository) }
 

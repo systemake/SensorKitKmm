@@ -1,14 +1,16 @@
 package com.vcm.sensorkit.ui.viewmodels
 
 import com.vcm.sensorkit.domain.models.HapticCommand
-import com.vcm.sensorkit.domain.models.SensorEvent
 import com.vcm.sensorkit.domain.models.TrailSession
 import com.vcm.sensorkit.domain.repository.LocationProviderRepository
 import com.vcm.sensorkit.domain.repository.SensorRepository
 import com.vcm.sensorkit.utils.DistanceCoordinates
+import com.vcm.sensorkit.utils.calculateCadence
+import com.vcm.sensorkit.utils.toHapticIntensity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -62,11 +64,10 @@ class TrailViewModel(
                 .collect { event ->
                     isStopped = false
                     lastStepTimestamp = TimeSource.Monotonic.markNow()
-                    val cadence = calculateCadence(event)
-                    val intensity = cadenceToIntensity(cadence)
+                    val cadence = lastTimestamp.calculateCadence(event.timestamp)
+                    lastTimestamp = event.timestamp
+                    val intensity = cadence.toHapticIntensity()
                     println("Cadence: $cadence")
-
-
                     if (intensity > 0f) {
                         val command = HapticCommand.Cadence(
                             intensity = intensity,
@@ -85,37 +86,8 @@ class TrailViewModel(
                     _hapticCommand.emit(HapticCommand.Stop)
                     isStopped = true
                 }
+                delay(500)
             }
-        }
-    }
-
-
-
-    private fun calculateCadence(event: SensorEvent): Float {
-
-        val now = event.timestamp
-
-        if (lastTimestamp == 0L) {
-            lastTimestamp = now
-            return 0f
-        }
-
-        val deltaSeconds = (now - lastTimestamp) / 1000f
-
-        lastTimestamp = now
-
-        if (deltaSeconds == 0f) return 0f
-
-        return 1f / deltaSeconds
-    }
-
-    private fun cadenceToIntensity(cadence: Float): Float {
-
-        return when {
-            cadence < 1f -> 0.2f
-            cadence < 2f -> 0.5f
-            cadence < 3f -> 0.8f
-            else -> 1f
         }
     }
 }

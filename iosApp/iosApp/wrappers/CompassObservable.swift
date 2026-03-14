@@ -26,9 +26,9 @@ class CompassObservable: ObservableObject {
     init() {
 
         let sensorRepository =
-            SensorRepositoryImpl(sensorType: SensorTypes().TYPE_ROTATION_VECTOR)
+            IOSSensorRepositoryImpl(sensorType: SensorTypes().TYPE_ROTATION_VECTOR)
 
-        let vibrationRepository = VibrationEffectRepositoryImpl()
+        let vibrationRepository = IOSVibrationEffectRepositoryImpl()
 
         viewModel = CompassViewModel(sensorRepository: sensorRepository)
 

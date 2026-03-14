@@ -1,4 +1,4 @@
-package com.vcm.sensorkit.tabs
+package com.vcm.sensorkit.ui.tabs
 
 import android.content.Context
 import android.hardware.SensorManager
@@ -24,7 +24,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import com.vcm.sensorkit.HapticPlayerRepositoryImpl
+import com.vcm.sensorkit.AndroidHapticPlayerRepositoryImpl
 import com.vcm.sensorkit.domain.models.HapticPattern
 import com.vcm.sensorkit.domain.models.HapticType
 import com.vcm.sensorkit.data.storage.AndroidPatternStorage
@@ -34,13 +34,11 @@ import com.vcm.sensorkit.ui.viewmodels.HapticStudioViewModel
 fun HapticStudio() {
 
     val context = LocalContext.current
-    val sensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
-
     val storage = remember {
         AndroidPatternStorage(context)
     }
 
-    val hapticPlayerRepository = remember { HapticPlayerRepositoryImpl(context) }
+    val hapticPlayerRepository = remember { AndroidHapticPlayerRepositoryImpl(context) }
 
     val viewModel = remember { HapticStudioViewModel(hapticPlayerRepository, storage) }
     val patterns by viewModel.patterns.collectAsState()
@@ -117,10 +115,6 @@ fun HapticStudio() {
         },  modifier = Modifier.fillMaxWidth()) {
             Text("Import from JSON")
         }
-
-
     }
-
-
 }
 

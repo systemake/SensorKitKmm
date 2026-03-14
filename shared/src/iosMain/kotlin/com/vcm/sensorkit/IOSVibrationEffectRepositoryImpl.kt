@@ -7,7 +7,7 @@ import platform.UIKit.UIImpactFeedbackStyle
 import platform.UIKit.UINotificationFeedbackGenerator
 import platform.UIKit.UINotificationFeedbackType
 
-class VibrationEffectRepositoryImpl : VibrationEffectRepository {
+class IOSVibrationEffectRepositoryImpl : VibrationEffectRepository {
 
     override fun vibrate(command: HapticCommand) {
 

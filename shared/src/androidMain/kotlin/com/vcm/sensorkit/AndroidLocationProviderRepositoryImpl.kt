@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 
 
-class LocationProviderRepositoryImpl(
+class AndroidLocationProviderRepositoryImpl(
     private val fusedClient: FusedLocationProviderClient
 ) : LocationProviderRepository {
 

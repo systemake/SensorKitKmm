@@ -7,7 +7,7 @@ import android.os.Vibrator
 import com.vcm.sensorkit.domain.models.HapticCommand
 import com.vcm.sensorkit.domain.repository.VibrationEffectRepository
 
-class VibrationEffectRepositoryImpl(
+class AndroidVibrationEffectRepositoryImpl(
     private val context: Context
 ) : VibrationEffectRepository {
 

@@ -1,4 +1,4 @@
-package com.vcm.sensorkit.tabs
+package com.vcm.sensorkit.ui.tabs
 
 import android.Manifest
 import android.content.Context
@@ -31,9 +31,9 @@ import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.Polyline
 import com.google.maps.android.compose.rememberCameraPositionState
-import com.vcm.sensorkit.LocationProviderRepositoryImpl
-import com.vcm.sensorkit.SensorRepositoryImpl
-import com.vcm.sensorkit.VibrationEffectRepositoryImpl
+import com.vcm.sensorkit.AndroidLocationProviderRepositoryImpl
+import com.vcm.sensorkit.AndroidSensorRepositoryImpl
+import com.vcm.sensorkit.AndroidVibrationEffectRepositoryImpl
 import com.vcm.sensorkit.domain.models.HapticCommand
 import com.vcm.sensorkit.ui.viewmodels.TrailViewModel
 
@@ -87,12 +87,11 @@ fun HapticTrail() {
     }
 
     val locationRepository = remember {
-        LocationProviderRepositoryImpl(fusedClient)
+        AndroidLocationProviderRepositoryImpl(fusedClient)
     }
-    val sensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR)
     val sensorRepository =
-        remember { SensorRepositoryImpl(sensorManager, Sensor.TYPE_STEP_DETECTOR) }
-    val vibrationRepository = remember { VibrationEffectRepositoryImpl(context) }
+        remember { AndroidSensorRepositoryImpl(sensorManager, Sensor.TYPE_STEP_DETECTOR) }
+    val vibrationRepository = remember { AndroidVibrationEffectRepositoryImpl(context) }
     var currentCommand by remember { mutableStateOf<HapticCommand?>(null) }
 
 
@@ -166,6 +165,7 @@ fun HapticTrail() {
                     Text("Walking")
                 }
             }
+
             is HapticCommand.Stop -> {
                 Button(
                     onClick = { println("Stopped") },
@@ -176,6 +176,7 @@ fun HapticTrail() {
                     Text("Stopped")
                 }
             }
+
             else -> {}
         }
     }

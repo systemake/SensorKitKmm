@@ -2,6 +2,7 @@ package com.vcm.sensorkit
 
 import com.vcm.sensorkit.domain.models.LocationEvent
 import com.vcm.sensorkit.domain.repository.LocationProviderRepository
+import com.vcm.sensorkit.domain.repository.NativeLocationProvider
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.useContents
 import kotlinx.coroutines.channels.awaitClose
@@ -10,43 +11,24 @@ import kotlinx.coroutines.flow.callbackFlow
 import platform.CoreLocation.CLLocation
 import platform.CoreLocation.CLLocationManager
 import platform.CoreLocation.CLLocationManagerDelegateProtocol
+import platform.CoreLocation.kCLDistanceFilterNone
+import platform.CoreLocation.kCLLocationAccuracyBest
+import platform.CoreLocation.kCLLocationAccuracyBestForNavigation
+import platform.Foundation.NSError
 import platform.darwin.NSObject
 
-class LocationProviderRepositoryImpl : LocationProviderRepository {
+class LocationProviderRepositoryImpl(private val nativeProvider: NativeLocationProvider) :
+    LocationProviderRepository {
 
     @OptIn(ExperimentalForeignApi::class)
     override fun locationUpdates(): Flow<LocationEvent> = callbackFlow {
 
-        val manager = CLLocationManager()
-        manager.requestWhenInUseAuthorization()
-        manager.startUpdatingLocation()
-
-        val delegate = object : NSObject(), CLLocationManagerDelegateProtocol {
-
-            override fun locationManager(
-                manager: CLLocationManager,
-                didUpdateLocations: List<*>
-            ) {
-
-                val location = didUpdateLocations.last() as CLLocation
-
-
-                trySend(
-                    location.coordinate.useContents {
-                        println("latitude es $latitude")
-                        LocationEvent(
-                            latitude = latitude,
-                            longitude = longitude
-                        )
-                    }
-                )
-            }
+        nativeProvider.setListener { event ->
+            trySend(event)
         }
 
-        manager.delegate = delegate
-
         awaitClose {
-            manager.stopUpdatingLocation()
+            nativeProvider.setListener { /* cleann */ }
         }
     }
 }

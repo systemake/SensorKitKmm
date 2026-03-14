@@ -100,12 +100,13 @@ struct HapticTrail: View {
 }
 
 
-class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
+class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate, NativeLocationProvider {
 
     private let manager = CLLocationManager()
-
+    @Published var hasPermission: Bool = false
     @Published var location: CLLocation?
     @Published var authorizationStatus: CLAuthorizationStatus
+    private var onLocationUpdate: ((LocationEvent) -> Void)? = nil
 
     override init() {
         self.authorizationStatus = manager.authorizationStatus
@@ -114,19 +115,36 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
         manager.desiredAccuracy = kCLLocationAccuracyBest
         manager.requestWhenInUseAuthorization()
         manager.startUpdatingLocation()
+        self.updatePermission(status: manager.authorizationStatus)
+    }
+
+    func setListener(onLocation: @escaping (LocationEvent) -> Void) {
+        self.onLocationUpdate = onLocation
     }
 
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         DispatchQueue.main.async {
-            self.authorizationStatus = manager.authorizationStatus
+            self.updatePermission(status: manager.authorizationStatus)
         }
     }
 
     func locationManager(_ manager: CLLocationManager,
                          didUpdateLocations locations: [CLLocation]) {
+        guard let last = locations.last else { return }
+        let event = LocationEvent(latitude: last.coordinate.latitude, longitude: last.coordinate.longitude)
+        onLocationUpdate?(event)
         location = locations.last
+
+        print("Location last view ", location?.coordinate.latitude)
     }
-    func requestPermission() {
+
+    private func updatePermission(status: CLAuthorizationStatus) {
+        DispatchQueue.main.async {
+            self.hasPermission = (status == .authorizedWhenInUse || status == .authorizedAlways)
+        }
+    }
+
+    func request() {
         manager.requestWhenInUseAuthorization()
     }
 }

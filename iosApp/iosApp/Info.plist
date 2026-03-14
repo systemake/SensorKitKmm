@@ -8,5 +8,7 @@
 	<string>We need your location to show your position on the map</string>
 	<key>NSMotionUsageDescription</key>
 	<string>This app uses motion sensors to detect steps and movement.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>This app uses location always to show the current location into map</string>
 </dict>
 </plist>

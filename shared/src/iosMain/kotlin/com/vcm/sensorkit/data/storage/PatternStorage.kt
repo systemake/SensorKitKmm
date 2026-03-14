@@ -1,8 +1,14 @@
 package com.vcm.sensorkit.data.storage
 
-import com.vcm.sensorkit.data.storage.PatternStorage
 import kotlinx.cinterop.ExperimentalForeignApi
-import platform.Foundation.*
+import platform.Foundation.NSDocumentDirectory
+import platform.Foundation.NSSearchPathForDirectoriesInDomains
+import platform.Foundation.NSString
+import platform.Foundation.NSUTF8StringEncoding
+import platform.Foundation.NSUserDomainMask
+import platform.Foundation.stringWithContentsOfFile
+import platform.Foundation.writeToFile
+
 @OptIn(ExperimentalForeignApi::class)
  class IosPatternStorage : PatternStorage {
 

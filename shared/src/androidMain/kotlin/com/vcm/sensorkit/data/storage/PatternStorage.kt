@@ -1,7 +1,6 @@
 package com.vcm.sensorkit.data.storage
 
 import android.content.Context
-import com.vcm.sensorkit.data.storage.PatternStorage
 
 class AndroidPatternStorage (
     private val context: Context

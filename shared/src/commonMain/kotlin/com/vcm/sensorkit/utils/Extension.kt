@@ -1,16 +1,9 @@
 package com.vcm.sensorkit.utils
 
-import com.vcm.sensorkit.models.HapticPattern
-import com.vcm.sensorkit.models.HapticType
-import com.vcm.sensorkit.models.MotionEvent
-import com.vcm.sensorkit.models.SensorEvent
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
+import com.vcm.sensorkit.domain.models.HapticPattern
+import com.vcm.sensorkit.domain.models.HapticType
+import com.vcm.sensorkit.domain.models.MotionEvent
+import com.vcm.sensorkit.domain.models.SensorEvent
 import kotlin.math.atan2
 import kotlin.math.sqrt
 

@@ -3,7 +3,6 @@ package com.vcm.sensorkit.tabs
 import android.content.Context
 import android.hardware.Sensor
 import android.hardware.SensorManager
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -27,8 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.vcm.sensorkit.SensorRepositoryImpl
 import com.vcm.sensorkit.VibrationEffectRepositoryImpl
-import com.vcm.sensorkit.models.HapticCommand
-import com.vcm.sensorkit.viewmodels.CompassViewModel
+import com.vcm.sensorkit.ui.viewmodels.CompassViewModel
 
 @Composable
 fun MotionCompass() {

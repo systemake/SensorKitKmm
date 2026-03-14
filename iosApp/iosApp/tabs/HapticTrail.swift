@@ -11,6 +11,7 @@ import Shared
 struct HapticTrail: View {
 
     @StateObject private var observable = TrailObservable()
+    @State private var firstLocationCentered = false
 
     @State private var cameraPosition: MapCameraPosition =
         .region(
@@ -28,65 +29,86 @@ struct HapticTrail: View {
 
 
     var body: some View {
-        ZStack {
-            Map(position: $cameraPosition) {
-                MapPolyline(
-                    coordinates: observable.path
-                ).stroke(.blue, lineWidth: 6)
-            }
+        Group {
+            if observable.hasPermission {
+                ZStack {
+                    Map(position: $cameraPosition) {
+                        UserAnnotation()
+                        MapPolyline(
+                            coordinates: observable.path
+                        ).stroke(.blue, lineWidth: 6)
 
-            if observable.currentCommand is HapticCommand.Cadence {
-
-                VStack {
-                    Spacer()
-
-                    HStack {
-                        Button("Walking") {}
+                    }
+                    VStack {
+                        HStack {
+                            Spacer()
+                            MapUserLocationButton()
+                                .padding()
+                        }
                         Spacer()
                     }
-                    .padding()
+
+                    renderCommandButtons()
+
                 }
-            }
+                .onChange(of: observable.lastLocation?.latitude) { _, _ in
+                    print("Location changed")
 
-            if observable.currentCommand is HapticCommand.Stop {
+                    guard let last = observable.lastLocation else { return }
 
-                VStack {
-                    Spacer()
-
-                    HStack {
-                        Spacer()
-                        Button("Stopped") {}
+                    withAnimation {
+                        cameraPosition = .region(
+                            MKCoordinateRegion(
+                                center: last,
+                                span: MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005)
+                            )
+                        )
                     }
-                    .padding()
+                    firstLocationCentered = true
+
                 }
+
+
+            } else {
+                ContentUnavailableView("Waiting for location permission...", systemImage: "location.slash")
             }
 
-        }.onChange(of: observable.path.last?.latitude) { _ in
-
-            guard let last = observable.path.last else { return }
-
-            cameraPosition = .region(
-                MKCoordinateRegion(
-                    center: last,
-                    span: MKCoordinateSpan(
-                        latitudeDelta: 0.01,
-                        longitudeDelta: 0.01
-                    )
-                )
-            )
         }
 
     }
 
+    @ViewBuilder
+    private func renderCommandButtons() -> some View {
+        VStack {
+            Spacer()
+            HStack {
+                if observable.currentCommand is HapticCommand.Cadence {
+                    Button("Walking") {
+                    }
+                    .buttonStyle(.borderedProminent)
+                }
+                Spacer()
+                if observable.currentCommand is HapticCommand.Stop {
+                    Button("Stopped") {
+                    }
+                    .buttonStyle(.borderedProminent).tint(.red)
+                }
+            }
+            .padding()
+        }
+    }
 }
+
 
 class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
 
     private let manager = CLLocationManager()
 
     @Published var location: CLLocation?
+    @Published var authorizationStatus: CLAuthorizationStatus
 
     override init() {
+        self.authorizationStatus = manager.authorizationStatus
         super.init()
         manager.delegate = self
         manager.desiredAccuracy = kCLLocationAccuracyBest
@@ -94,8 +116,17 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
         manager.startUpdatingLocation()
     }
 
+    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+        DispatchQueue.main.async {
+            self.authorizationStatus = manager.authorizationStatus
+        }
+    }
+
     func locationManager(_ manager: CLLocationManager,
                          didUpdateLocations locations: [CLLocation]) {
         location = locations.last
+    }
+    func requestPermission() {
+        manager.requestWhenInUseAuthorization()
     }
 }

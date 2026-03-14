@@ -25,10 +25,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.vcm.sensorkit.HapticPlayerRepositoryImpl
-import com.vcm.sensorkit.models.HapticPattern
-import com.vcm.sensorkit.models.HapticType
-import com.vcm.sensorkit.storage.AndroidPatternStorage
-import com.vcm.sensorkit.viewmodels.HapticStudioViewModel
+import com.vcm.sensorkit.domain.models.HapticPattern
+import com.vcm.sensorkit.domain.models.HapticType
+import com.vcm.sensorkit.data.storage.AndroidPatternStorage
+import com.vcm.sensorkit.ui.viewmodels.HapticStudioViewModel
 
 @Composable
 fun HapticStudio() {
@@ -46,13 +46,11 @@ fun HapticStudio() {
     val patterns by viewModel.patterns.collectAsState()
     val selected by viewModel.selectedPattern.collectAsState()
 
-
     LaunchedEffect(Unit) {
         viewModel.log.collect { message ->
             Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
         }
     }
-
 
 
     Column(modifier = Modifier
@@ -115,7 +113,6 @@ fun HapticStudio() {
         }
 
         Button(onClick = {
-            val json = """[{"intensity":0.5,"sharpness":0.3,"duration":200}]"""
             viewModel.load()
         },  modifier = Modifier.fillMaxWidth()) {
             Text("Import from JSON")

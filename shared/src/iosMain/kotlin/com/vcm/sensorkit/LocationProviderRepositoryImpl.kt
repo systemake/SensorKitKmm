@@ -1,7 +1,7 @@
 package com.vcm.sensorkit
 
-import com.vcm.sensorkit.models.LocationEvent
-import com.vcm.sensorkit.repository.LocationProviderRepository
+import com.vcm.sensorkit.domain.models.LocationEvent
+import com.vcm.sensorkit.domain.repository.LocationProviderRepository
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.useContents
 import kotlinx.coroutines.channels.awaitClose
@@ -30,8 +30,10 @@ class LocationProviderRepositoryImpl : LocationProviderRepository {
 
                 val location = didUpdateLocations.last() as CLLocation
 
+
                 trySend(
                     location.coordinate.useContents {
+                        println("latitude es $latitude")
                         LocationEvent(
                             latitude = latitude,
                             longitude = longitude

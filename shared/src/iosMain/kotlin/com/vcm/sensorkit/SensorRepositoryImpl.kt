@@ -1,8 +1,8 @@
 package com.vcm.sensorkit
 
-import com.vcm.sensorkit.models.SensorEvent
-import com.vcm.sensorkit.models.SensorTypes
-import com.vcm.sensorkit.repository.SensorRepository
+import com.vcm.sensorkit.domain.models.SensorEvent
+import com.vcm.sensorkit.domain.models.SensorTypes
+import com.vcm.sensorkit.domain.repository.SensorRepository
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow

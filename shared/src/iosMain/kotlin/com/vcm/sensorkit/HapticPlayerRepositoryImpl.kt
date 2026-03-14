@@ -1,8 +1,8 @@
 package com.vcm.sensorkit
 
-import com.vcm.sensorkit.models.HapticPattern
-import com.vcm.sensorkit.models.HapticType
-import com.vcm.sensorkit.repository.HapticPlayerRepository
+import com.vcm.sensorkit.domain.models.HapticPattern
+import com.vcm.sensorkit.domain.models.HapticType
+import com.vcm.sensorkit.domain.repository.HapticPlayerRepository
 import kotlinx.cinterop.BetaInteropApi
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.ObjCObjectVar
@@ -27,22 +27,29 @@ class HapticPlayerRepositoryImpl : HapticPlayerRepository {
 
     init {
         try {
-            val hapticEngine = CHHapticEngine()
+            val hapticEngine = CHHapticEngine(andReturnError = null)
             hapticEngine.startAndReturnError(null)
             engine = hapticEngine
         } catch (e: Exception) {
             println("Haptic Engine failed to initialize: ${e.message}")
         }
+
     }
 
 
     @OptIn(BetaInteropApi::class)
     override fun play(pattern: HapticPattern) {
+        val currentEngine = engine ?: run {
+            println("HapticPlayer: Engine is null, cannot play")
+            return
+        }
+
         val intensityParam =
             CHHapticEventParameter(CHHapticEventParameterIDHapticIntensity, pattern.intensity)
-        val sharpnessParam = CHHapticEventParameter(CHHapticEventParameterIDHapticSharpness, pattern.sharpness)
+        val sharpnessParam =
+            CHHapticEventParameter(CHHapticEventParameterIDHapticSharpness, pattern.sharpness)
 
-        val eventType = when(pattern.type) {
+        val eventType = when (pattern.type) {
             HapticType.TRANSIENT -> CHHapticEventTypeHapticTransient
             HapticType.CONTINUOUS -> CHHapticEventTypeHapticContinuous
         }
@@ -50,12 +57,12 @@ class HapticPlayerRepositoryImpl : HapticPlayerRepository {
         val event = CHHapticEvent(
             eventType = eventType,
             parameters = listOf(intensityParam, sharpnessParam),
-            relativeTime = 0.0, 
+            relativeTime = 0.0,
             duration = pattern.duration.toDouble() / 1000.0
         )
 
         val errorPtr = nativeHeap.alloc<ObjCObjectVar<NSError?>>()
-        val eventsList = listOf(event) as List<CHHapticEvent>
+        val eventsList = listOf(event)
         val paramsList = listOf<CHHapticEventParameter>()
 
         val patternObj = CHHapticPattern(
@@ -71,14 +78,14 @@ class HapticPlayerRepositoryImpl : HapticPlayerRepository {
 
 
         val playerError = nativeHeap.alloc<ObjCObjectVar<NSError?>>()
-        val player = engine?.createPlayerWithPattern(patternObj, error = playerError.ptr)
-
         if (playerError.value != null) {
             println("Error creating CHHapticPlayer: ${playerError.value}")
         }
 
 
         val startError = nativeHeap.alloc<ObjCObjectVar<NSError?>>()
+
+        val player = currentEngine.createPlayerWithPattern(patternObj, errorPtr.ptr)
         player?.startAtTime(0.0, error = startError.ptr)
 
         if (startError.value != null) {

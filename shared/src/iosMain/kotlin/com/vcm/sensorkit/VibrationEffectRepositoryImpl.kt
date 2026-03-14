@@ -1,7 +1,7 @@
 package com.vcm.sensorkit
 
-import com.vcm.sensorkit.models.HapticCommand
-import com.vcm.sensorkit.repository.VibrationEffectRepository
+import com.vcm.sensorkit.domain.models.HapticCommand
+import com.vcm.sensorkit.domain.repository.VibrationEffectRepository
 import platform.UIKit.UIImpactFeedbackGenerator
 import platform.UIKit.UIImpactFeedbackStyle
 import platform.UIKit.UINotificationFeedbackGenerator

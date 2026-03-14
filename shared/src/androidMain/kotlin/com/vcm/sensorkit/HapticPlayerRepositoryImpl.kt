@@ -4,8 +4,8 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.os.VibrationEffect
 import android.os.Vibrator
-import com.vcm.sensorkit.models.HapticPattern
-import com.vcm.sensorkit.repository.HapticPlayerRepository
+import com.vcm.sensorkit.domain.models.HapticPattern
+import com.vcm.sensorkit.domain.repository.HapticPlayerRepository
 
 class HapticPlayerRepositoryImpl(private val context: Context) : HapticPlayerRepository {
     private val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator

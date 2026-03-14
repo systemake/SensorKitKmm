@@ -1,6 +1,6 @@
 package com.vcm.sensorkit.utils
 
-import com.vcm.sensorkit.models.LocationEvent
+import com.vcm.sensorkit.domain.models.LocationEvent
 import kotlin.math.PI
 import kotlin.math.atan2
 import kotlin.math.cos

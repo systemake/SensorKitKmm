@@ -3,8 +3,8 @@ package com.vcm.sensorkit
 import android.hardware.Sensor
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
-import com.vcm.sensorkit.models.SensorEvent
-import com.vcm.sensorkit.repository.SensorRepository
+import com.vcm.sensorkit.domain.models.SensorEvent
+import com.vcm.sensorkit.domain.repository.SensorRepository
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow

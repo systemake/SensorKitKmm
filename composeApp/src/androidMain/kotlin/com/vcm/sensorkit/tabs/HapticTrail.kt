@@ -34,8 +34,8 @@ import com.google.maps.android.compose.rememberCameraPositionState
 import com.vcm.sensorkit.LocationProviderRepositoryImpl
 import com.vcm.sensorkit.SensorRepositoryImpl
 import com.vcm.sensorkit.VibrationEffectRepositoryImpl
-import com.vcm.sensorkit.models.HapticCommand
-import com.vcm.sensorkit.viewmodels.TrailViewModel
+import com.vcm.sensorkit.domain.models.HapticCommand
+import com.vcm.sensorkit.ui.viewmodels.TrailViewModel
 
 @RequiresApi(Build.VERSION_CODES.Q)
 @Composable
@@ -92,7 +92,6 @@ fun HapticTrail() {
     val sensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR)
     val sensorRepository =
         remember { SensorRepositoryImpl(sensorManager, Sensor.TYPE_STEP_DETECTOR) }
-    println("STEP SENSOR: $sensor")
     val vibrationRepository = remember { VibrationEffectRepositoryImpl(context) }
     var currentCommand by remember { mutableStateOf<HapticCommand?>(null) }
 
@@ -106,12 +105,10 @@ fun HapticTrail() {
 
     LaunchedEffect(Unit) {
         viewModel.startTracking()
-
         viewModel.hapticCommand.collect { command ->
             currentCommand = command
             vibrationRepository.vibrate(command)
         }
-
     }
 
     val trail by viewModel.trail.collectAsState()
@@ -127,7 +124,6 @@ fun HapticTrail() {
             cameraPositionState.move(
                 CameraUpdateFactory.newLatLngZoom(myLocation, 18f)
             )
-
             firstLocationCentered = true
         }
     }
@@ -169,8 +165,6 @@ fun HapticTrail() {
                 ) {
                     Text("Walking")
                 }
-
-
             }
             is HapticCommand.Stop -> {
                 Button(
@@ -185,8 +179,5 @@ fun HapticTrail() {
             else -> {}
         }
     }
-
-
-
 }
 

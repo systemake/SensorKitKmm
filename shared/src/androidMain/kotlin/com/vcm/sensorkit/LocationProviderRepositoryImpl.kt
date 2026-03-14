@@ -6,8 +6,8 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
-import com.vcm.sensorkit.models.LocationEvent
-import com.vcm.sensorkit.repository.LocationProviderRepository
+import com.vcm.sensorkit.domain.models.LocationEvent
+import com.vcm.sensorkit.domain.repository.LocationProviderRepository
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow

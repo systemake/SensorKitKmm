@@ -11,6 +11,8 @@ class HapticStudioObservable: ObservableObject {
     private let viewModel: HapticStudioViewModel
     @Published var patterns: [HapticPattern] = []
     @Published var selectedPattern: HapticPattern? = nil
+    @Published var showLogAlert: Bool = false
+    @Published var lastLogMessage: String = ""
 
     init() {
 
@@ -24,8 +26,6 @@ class HapticStudioObservable: ObservableObject {
             DispatchQueue.main.async {
                 self?.patterns = list!
             }
-
-
         }
 
         FlowUtils().collectStateFlow(flow:viewModel.selectedPattern) { [weak self] data in
@@ -34,6 +34,8 @@ class HapticStudioObservable: ObservableObject {
         }
 
         FlowUtils().collectSharedFlow(flow: viewModel.log) { message in
+            self.showLogAlert = true
+            self.lastLogMessage = (message as? String) ?? ""
             print("Log: \(message)")
         }
     }
@@ -61,10 +63,10 @@ class HapticStudioObservable: ObservableObject {
     }
 
     func export()  {
-        return viewModel.load()
+        return viewModel.save()
     }
 
-    func importJson(_ json: String) {
-        viewModel.save()
+    func importJson() {
+        viewModel.load()
     }
 }

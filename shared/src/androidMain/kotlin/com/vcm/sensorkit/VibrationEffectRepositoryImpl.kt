@@ -4,8 +4,8 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.os.VibrationEffect
 import android.os.Vibrator
-import com.vcm.sensorkit.models.HapticCommand
-import com.vcm.sensorkit.repository.VibrationEffectRepository
+import com.vcm.sensorkit.domain.models.HapticCommand
+import com.vcm.sensorkit.domain.repository.VibrationEffectRepository
 
 class VibrationEffectRepositoryImpl(
     private val context: Context

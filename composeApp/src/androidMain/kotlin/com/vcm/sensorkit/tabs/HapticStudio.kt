@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.dp
 import com.vcm.sensorkit.HapticPlayerRepositoryImpl
 import com.vcm.sensorkit.models.HapticPattern
 import com.vcm.sensorkit.models.HapticType
-import com.vcm.sensorkit.storage.PatternStorage
+import com.vcm.sensorkit.storage.AndroidPatternStorage
 import com.vcm.sensorkit.viewmodels.HapticStudioViewModel
 
 @Composable
@@ -37,7 +37,7 @@ fun HapticStudio() {
     val sensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
 
     val storage = remember {
-        PatternStorage(context)
+        AndroidPatternStorage(context)
     }
 
     val hapticPlayerRepository = remember { HapticPlayerRepositoryImpl(context) }
@@ -109,8 +109,7 @@ fun HapticStudio() {
             Text("Add Text")
         }
         Button(onClick = {
-            val json = viewModel.save()
-            println("Exported JSON: $json")
+             viewModel.save()
         } , modifier = Modifier.fillMaxWidth()) {
             Text("Export to JSON")
         }

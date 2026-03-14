@@ -23,16 +23,21 @@ import platform.Foundation.NSError
 @OptIn(ExperimentalForeignApi::class)
 class HapticPlayerRepositoryImpl : HapticPlayerRepository {
 
-    private val engine: CHHapticEngine = CHHapticEngine()
+    private var engine: CHHapticEngine? = null
 
     init {
-        engine.startAndReturnError(null)
+        try {
+            val hapticEngine = CHHapticEngine()
+            hapticEngine.startAndReturnError(null)
+            engine = hapticEngine
+        } catch (e: Exception) {
+            println("Haptic Engine failed to initialize: ${e.message}")
+        }
     }
 
 
     @OptIn(BetaInteropApi::class)
     override fun play(pattern: HapticPattern) {
-        // Crear evento haptic según tipo
         val intensityParam =
             CHHapticEventParameter(CHHapticEventParameterIDHapticIntensity, pattern.intensity)
         val sharpnessParam = CHHapticEventParameter(CHHapticEventParameterIDHapticSharpness, pattern.sharpness)
@@ -45,7 +50,7 @@ class HapticPlayerRepositoryImpl : HapticPlayerRepository {
         val event = CHHapticEvent(
             eventType = eventType,
             parameters = listOf(intensityParam, sharpnessParam),
-            relativeTime = 0.0, // empezar ahora
+            relativeTime = 0.0, 
             duration = pattern.duration.toDouble() / 1000.0
         )
 
@@ -64,15 +69,15 @@ class HapticPlayerRepositoryImpl : HapticPlayerRepository {
             println("Error creating CHHapticPattern: ${errorPtr.value}")
         }
 
-// Crear el player
+
         val playerError = nativeHeap.alloc<ObjCObjectVar<NSError?>>()
-        val player = engine.createPlayerWithPattern(patternObj, error = playerError.ptr)
+        val player = engine?.createPlayerWithPattern(patternObj, error = playerError.ptr)
 
         if (playerError.value != null) {
             println("Error creating CHHapticPlayer: ${playerError.value}")
         }
 
-// Reproducir
+
         val startError = nativeHeap.alloc<ObjCObjectVar<NSError?>>()
         player?.startAtTime(0.0, error = startError.ptr)
 

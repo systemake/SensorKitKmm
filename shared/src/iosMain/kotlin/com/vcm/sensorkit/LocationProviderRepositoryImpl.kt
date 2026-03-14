@@ -18,6 +18,8 @@ class LocationProviderRepositoryImpl : LocationProviderRepository {
     override fun locationUpdates(): Flow<LocationEvent> = callbackFlow {
 
         val manager = CLLocationManager()
+        manager.requestWhenInUseAuthorization()
+        manager.startUpdatingLocation()
 
         val delegate = object : NSObject(), CLLocationManagerDelegateProtocol {
 
@@ -40,7 +42,6 @@ class LocationProviderRepositoryImpl : LocationProviderRepository {
         }
 
         manager.delegate = delegate
-        manager.startUpdatingLocation()
 
         awaitClose {
             manager.stopUpdatingLocation()

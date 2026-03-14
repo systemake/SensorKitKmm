@@ -1,9 +1,12 @@
 package com.vcm.sensorkit.models
 
 import kotlinx.serialization.Serializable
-
+import kotlin.experimental.ExperimentalObjCName
+import kotlin.native.ObjCName
+@OptIn(ExperimentalObjCName::class)
 @Serializable
 enum class HapticType {
-    TRANSIENT,
-    CONTINUOUS
+
+    @ObjCName("Transient") TRANSIENT,
+    @ObjCName("Continuous") CONTINUOUS
 }

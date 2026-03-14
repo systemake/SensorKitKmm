@@ -3,9 +3,9 @@ package com.vcm.sensorkit.storage
 import kotlinx.cinterop.ExperimentalForeignApi
 import platform.Foundation.*
 @OptIn(ExperimentalForeignApi::class)
-actual class PatternStorage {
+ class IosPatternStorage : PatternStorage {
 
-    actual suspend fun save(json: String) {
+    override suspend fun save(json: String) {
 
         val path = NSSearchPathForDirectoriesInDomains(
             NSDocumentDirectory,
@@ -25,7 +25,7 @@ actual class PatternStorage {
     }
 
 
-    actual suspend fun load(): String? {
+    override suspend fun load(): String? {
 
         val path = NSSearchPathForDirectoriesInDomains(
             NSDocumentDirectory,
@@ -42,3 +42,4 @@ actual class PatternStorage {
         ) as String?
     }
 }
+

@@ -1,6 +1,7 @@
 package com.vcm.sensorkit.utils
 
 import com.vcm.sensorkit.models.HapticPattern
+import com.vcm.sensorkit.models.HapticType
 import com.vcm.sensorkit.models.MotionEvent
 import com.vcm.sensorkit.models.SensorEvent
 import kotlinx.coroutines.CoroutineScope
@@ -35,3 +36,5 @@ fun HapticPattern.validate(): Boolean {
             decay in 0f..1f &&
             duration > 0
 }
+
+val HapticType.Companion.TRANSIENT_TYPE: HapticType get() = HapticType.TRANSIENT

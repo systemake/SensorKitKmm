@@ -6,8 +6,13 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		81E86C2B2F650CD200752D93 /* CoreHaptics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 81E86C2A2F650CD200752D93 /* CoreHaptics.framework */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		2B07BAFEE54B214860EBBB3D /* SensorKit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SensorKit.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		81E86C2A2F650CD200752D93 /* CoreHaptics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreHaptics.framework; path = System/Library/Frameworks/CoreHaptics.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -41,6 +46,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				81E86C2B2F650CD200752D93 /* CoreHaptics.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -52,6 +58,7 @@
 			children = (
 				F96CDA169F01EC65F9E034E8 /* Configuration */,
 				85D847870EDECEEB9ACC5322 /* iosApp */,
+				81E86C292F650CD200752D93 /* Frameworks */,
 				1A72E93DCCA172D789FAF92B /* Products */,
 			);
 			sourceTree = "<group>";
@@ -62,6 +69,14 @@
 				2B07BAFEE54B214860EBBB3D /* SensorKit.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		81E86C292F650CD200752D93 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				81E86C2A2F650CD200752D93 /* CoreHaptics.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -243,6 +258,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -336,6 +352,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

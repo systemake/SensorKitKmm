@@ -2,18 +2,18 @@ package com.vcm.sensorkit.storage
 
 import android.content.Context
 
-actual class PatternStorage(
+ class AndroidPatternStorage (
     private val context: Context
-) {
+) : PatternStorage {
 
-    actual suspend fun save(json: String) {
+     override suspend fun save(json: String) {
 
         context.openFileOutput("patterns.json", Context.MODE_PRIVATE)
             .bufferedWriter()
             .use { it.write(json) }
     }
 
-    actual suspend fun load(): String? {
+     override suspend fun load(): String? {
 
         return try {
             context.openFileInput("patterns.json")

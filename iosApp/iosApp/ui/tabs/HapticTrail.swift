@@ -31,13 +31,17 @@ struct HapticTrail: View {
     var body: some View {
         Group {
             if observable.hasPermission {
+
                 ZStack {
-                    Map(position: $cameraPosition) {
+                    Map(position: $cameraPosition, interactionModes: .all) {
                         UserAnnotation()
                         MapPolyline(
                             coordinates: observable.path
                         ).stroke(.blue, lineWidth: 6)
 
+                    }.mapControls {
+                        MapUserLocationButton()
+                        MapPitchToggle()
                     }
                     VStack {
                         HStack {
@@ -52,20 +56,20 @@ struct HapticTrail: View {
 
                 }
                 .onChange(of: observable.lastLocation?.latitude) { _, _ in
-                    print("Location changed")
 
                     guard let last = observable.lastLocation else { return }
 
-                    withAnimation {
-                        cameraPosition = .region(
-                            MKCoordinateRegion(
-                                center: last,
-                                span: MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005)
+                    if (!firstLocationCentered){
+                        withAnimation {
+                            cameraPosition = .region(
+                                MKCoordinateRegion(
+                                    center: last,
+                                    span: MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005)
+                                )
                             )
-                        )
+                        }
+                        firstLocationCentered = true
                     }
-                    firstLocationCentered = true
-
                 }
 
 

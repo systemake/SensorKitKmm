@@ -22,7 +22,6 @@ class TrailObservable: ObservableObject {
     init() {
 
 
-
         let locationRepository = IOSLocationProviderRepositoryImpl(nativeProvider: locationManager)
         let sensorRepository =
             IOSSensorRepositoryImpl(sensorType: SensorTypes().TYPE_STEP_DETECTOR)
@@ -45,19 +44,22 @@ class TrailObservable: ObservableObject {
 
 
         FlowUtils().collectStateFlow(flow: viewModel.trail) { trail in
-            guard let t = trail as? TrailSession else { return }
+            guard let t = trail as? TrailSession else {
+                return
+            }
             DispatchQueue.main.async {
                 let newPath = t.locationEvents.map {
                     CLLocationCoordinate2D(latitude: $0.latitude, longitude: $0.longitude)
                 }
                 self.path = newPath
                 if let lastEvent = t.locationEvents.last {
+                    print("🚀 Última ubicación: Lat \(lastEvent.latitude), Lon \(lastEvent.longitude)")
                     self.lastLocation = CLLocationCoordinate2D(
                         latitude: lastEvent.latitude,
                         longitude: lastEvent.longitude
                     )
                 }
-        }
+            }
         }
 
 

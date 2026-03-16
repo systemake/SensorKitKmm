@@ -8,6 +8,7 @@ import com.vcm.sensorkit.utils.toMotionEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -37,10 +38,12 @@ class CompassViewModel(
     private val _hapticCommand = MutableSharedFlow<HapticCommand>()
     val hapticCommand: SharedFlow<HapticCommand> = _hapticCommand
 
+    private var job: Job? = null
 
     @OptIn(FlowPreview::class)
     fun startSensors() {
-        scope.launch {
+        if (job?.isActive == true) return
+        job = scope.launch {
             sensorRepository.sensorEvents().sample(50)
                 .collect { event ->
                     _sensorState.value = event
@@ -84,7 +87,7 @@ class CompassViewModel(
     }
 
     fun stop() {
-        scope.cancel()
+        job?.cancel()
     }
 
 }

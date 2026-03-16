@@ -40,6 +40,9 @@ struct MotionCompass: View {
                 Text("vibrate angle: \(observable.heading)")
             }
             .padding()
+            .onAppear {
+                observable.start()
+            }
             .onDisappear {
                 observable.stop()
             }

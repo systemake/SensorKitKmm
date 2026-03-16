@@ -59,6 +59,10 @@ class CompassObservable: ObservableObject {
         }
     }
 
+    func start() {
+        viewModel.startSensors()
+    }
+
     func stop() {
         viewModel.stop()
     }

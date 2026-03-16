@@ -1,27 +1,32 @@
 package com.vcm.sensorkit.ui.viewmodels
 
 import com.vcm.sensorkit.domain.models.HapticCommand
+import com.vcm.sensorkit.domain.models.SensorEvent
 import com.vcm.sensorkit.domain.models.TrailSession
 import com.vcm.sensorkit.domain.repository.LocationProviderRepository
 import com.vcm.sensorkit.domain.repository.SensorRepository
 import com.vcm.sensorkit.utils.DistanceCoordinates
 import com.vcm.sensorkit.utils.calculateCadence
 import com.vcm.sensorkit.utils.toHapticIntensity
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.transformLatest
 import kotlinx.coroutines.launch
 import kotlin.time.TimeMark
 import kotlin.time.TimeSource
 
 class TrailViewModel(
     private val locationProviderRepository: LocationProviderRepository,
-    private val sensorRepository: SensorRepository
+    private val sensorRepository: SensorRepository,
+    private val dispatcher: CoroutineDispatcher = Dispatchers.Default
 ) {
     private var lastStepTimestamp: TimeMark = TimeSource.Monotonic.markNow()
     private var lastTimestamp = 0L
@@ -32,8 +37,9 @@ class TrailViewModel(
     private val _hapticCommand = MutableSharedFlow<HapticCommand>()
     val hapticCommand: SharedFlow<HapticCommand> = _hapticCommand
 
-    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
+    private val scope = CoroutineScope(SupervisorJob() + dispatcher)
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     fun startTracking() {
 
         scope.launch {
@@ -61,33 +67,27 @@ class TrailViewModel(
         scope.launch {
 
             sensorRepository.sensorEvents()
-                .collect { event ->
-                    isStopped = false
+                .transformLatest<SensorEvent, HapticCommand> { event ->
                     lastStepTimestamp = TimeSource.Monotonic.markNow()
+                    isStopped = false
                     val cadence = lastTimestamp.calculateCadence(event.timestamp)
                     lastTimestamp = event.timestamp
                     val intensity = cadence.toHapticIntensity()
                     println("Cadence: $cadence")
                     if (intensity > 0f) {
-                        val command = HapticCommand.Cadence(
-                            intensity = intensity,
-                            duration = 80
-                        )
-
-                        _hapticCommand.emit(command)
+                        emit(HapticCommand.Cadence(intensity, 80))
                     }
+                    delay(3000)
+                    if (!isStopped) {
+                        isStopped = true
+                        emit(HapticCommand.Stop)
+                        println("stopp: stooooop")
+                    }
+                }.collect { command ->
+
+                    _hapticCommand.emit(command)
                 }
         }
 
-        scope.launch {
-
-            while (true) {
-                if (lastStepTimestamp.elapsedNow().inWholeSeconds > 2 && !isStopped) {
-                    _hapticCommand.emit(HapticCommand.Stop)
-                    isStopped = true
-                }
-                delay(500)
-            }
-        }
     }
 }

@@ -26,18 +26,17 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-
-            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
-            implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.0")
-            implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.7.1")
-            implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.1")
-
+            implementation(libs.kotlinx.coroutines.core)
+            implementation(libs.kotlinx.datetime)
+            implementation(libs.kotlinx.serialization.core)
+            implementation(libs.kotlinx.serialization.json)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
+            implementation(libs.kotlinx.coroutines.test)
         }
         androidMain.dependencies {
-            implementation("com.google.android.gms:play-services-location:21.0.1")
+            implementation(libs.play.services.location)
         }
 
     }

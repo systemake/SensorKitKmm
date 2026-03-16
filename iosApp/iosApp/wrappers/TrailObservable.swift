@@ -28,7 +28,8 @@ class TrailObservable: ObservableObject {
 
         viewModel = TrailViewModel(
             locationProviderRepository: locationRepository,
-            sensorRepository: sensorRepository
+            sensorRepository: sensorRepository,
+            dispatcher: DispatcherProvider.shared.default_
         )
 
         locationManager.$hasPermission

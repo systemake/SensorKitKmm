@@ -1,41 +1,65 @@
-This is a Kotlin Multiplatform project targeting Android, iOS.
+# 🏃‍♂️ Multiplatform Sensor Tracking Challenge (KMP)
 
-* [/composeApp](./composeApp/src) is for code that will be shared across your Compose Multiplatform applications.
-  It contains several subfolders:
-  - [commonMain](./composeApp/src/commonMain/kotlin) is for code that’s common for all targets.
-  - Other folders are for Kotlin code that will be compiled for only the platform indicated in the folder name.
-    For example, if you want to use Apple’s CoreCrypto for the iOS part of your Kotlin app,
-    the [iosMain](./composeApp/src/iosMain/kotlin) folder would be the right place for such calls.
-    Similarly, if you want to edit the Desktop (JVM) specific part, the [jvmMain](./composeApp/src/jvmMain/kotlin)
-    folder is the appropriate location.
+This project is a **Kotlin Multiplatform (KMP)** solution for a technical challenge. It implements a real-time physical activity tracking system with haptic feedback. The application is fully functional for **Android and iOS**, with a high focus on sensor precision, low-latency UI updates, and Clean Architecture principles.
 
-* [/iosApp](./iosApp/iosApp) contains iOS applications. Even if you’re sharing your UI with Compose Multiplatform,
-  you need this entry point for your iOS app. This is also where you should add SwiftUI code for your project.
+## 🏗️ Project Architecture
 
-* [/shared](./shared/src) is for the code that will be shared between all targets in the project.
-  The most important subfolder is [commonMain](./shared/src/commonMain/kotlin). If preferred, you
-  can add code to the platform-specific folders here too.
+The project follows **Clean Architecture** adapted for KMP to maximize code reuse while maintaining direct access to native hardware APIs.
 
-### Build and Run Android Application
-
-To build and run the development version of the Android app, use the run configuration from the run widget
-in your IDE’s toolbar or build it directly from the terminal:
-- on macOS/Linux
-  ```shell
-  ./gradlew :composeApp:assembleDebug
-  ```
-- on Windows
-  ```shell
-  .\gradlew.bat :composeApp:assembleDebug
-  ```
-
-### Build and Run iOS Application
-
-To build and run the development version of the iOS app, use the run configuration from the run widget
-in your IDE’s toolbar or open the [/iosApp](./iosApp) directory in Xcode and run it from there.
+### Module Structure:
+* **`shared/commonMain`**: Contains the core business logic (**Domain**), data models, and **ViewModels**. It defines repository interfaces and reactive logic for cadence and session management.
+* **`shared/androidMain` & `shared/iosMain`**: Contains platform-specific implementations of repositories (`AndroidSensorRepository`, `IosSensorRepository`, etc.) utilizing native system APIs.
+* **`composeApp` & `iosApp`**: Native presentation layers built with **Jetpack Compose** and **SwiftUI**, respectively.
 
 ---
 
-Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html)…# SensorKit
-# SensorKitKmm
-# SensorKitKmm
+## 🛠️ Tech Stack & Hardware Integration
+
+To ensure a fluid and accurate experience, the app integrates with low-level hardware APIs on both platforms:
+
+| Feature | 🤖 Android | 🍎 iOS |
+| :--- | :--- | :--- |
+| **Motion Sensors** | `SensorManager` | `CMMotionManager` & `CMPedometer` |
+| **Location Tracking** | `FusedLocationProviderClient` | `CLLocationManager` |
+| **Haptic Engine** | `VibrationEffect` | `CHHapticEngine` |
+| **UI Framework** | Jetpack Compose | SwiftUI |
+
+---
+
+## 🚀 Key Technical Decisions
+
+### 1. Multiplatform Reactivity
+Native sensor updates are transformed into Kotlin data streams using **`callbackFlow`**. To bridge the gap with iOS:
+* **Wrappers and Extensions**: Custom wrappers were created to expose `StateFlow` and `SharedFlow` to Swift, allowing the native UI to observe state changes reactively.
+* This ensures that the UI remains "dumb" and only reacts to states emitted by the Shared ViewModel.
+
+### 2. Latency Optimization (iOS)
+To address the intrinsic delay of the `CMPedometer` API on iOS, a hybrid logic was implemented in the `IosSensorRepository`. By combining accelerometer data with pedometer events, the app triggers immediate haptic feedback, ensuring the vibration aligns perfectly with the user's foot impact.
+
+### 3. Quality Assurance (Testing)
+Comprehensive Unit Tests were implemented in `commonTest` to ensure logic reliability across platforms:
+* **TrailViewModel**: Validated session tracking logic and state transitions.
+* **Mocking**: Created mock implementations for sensor and location providers to isolate logic tests from hardware.
+* **Virtual Time Dispatching**: Utilized `StandardTestDispatcher` and `runTest` to verify time-sensitive behaviors, such as the 3-second inactivity "Stop" command.
+* **Serialization**: Verified "Round-trip" serialization for haptic commands to ensure data integrity between Kotlin and the native layers.
+
+---
+
+## 🧪 Running Tests
+To validate the shared logic on both platforms, run the following command in your terminal:
+```bash
+./gradlew allTests
+
+For platform-specific unit tests:
+
+./gradlew :shared:testDebugUnitTest       # Android
+./gradlew :shared:iosSimulationPickerTest # iOS
+
+📈 Future Improvements
+Implementation of local persistence using Room or SQLDelight for session history.
+
+Battery life optimization via dynamic GPS sampling rates.
+
+Integration of Map frameworks (Google Maps / Apple Maps) to visualize routes in real-time.
+
+Developed by: Gianfranco Gutierrez - Android Tech Lead / Senior Developer
